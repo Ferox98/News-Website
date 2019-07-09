@@ -1,6 +1,10 @@
-from flask import Flask
-from views.index import bp as index_bp
+from flask import Flask, render_template
+import webscraper
 
 app = Flask(__name__)
 
-app.register_blueprint(index_bp)
+@app.route("/")
+def dynamic_page():
+    #run scraper
+    newsItems = webscraper.fetch_news()
+    return render_template('index.html', news = newsItems)

@@ -2,6 +2,7 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 
 url = 'http://www.bbc.com/news'
+sport_url = 'http://www.bbc.com/sport'
 
 class NewsItem() :
     def __init__(self, img_url, headline, content):
@@ -12,7 +13,6 @@ class NewsItem() :
     def add_detail(detail):
         self.detail = detail
 
-newsItems = []
 
 def initialize_driver():
     driver = webdriver.Chrome('chromedriver.exe')
@@ -37,7 +37,10 @@ def fetch_content(div_1):
     p_tag = div_1.find('p', class_=['gs-c-promo-summary gel-long-primer gs-u-mt nw-c-promo-summary'])
     return p_tag.text
 
-def fetch_news(driver):
+def fetch_news():
+    print("HOLA!")
+    newsItems = []
+    driver = initialize_driver()
     soup_level1 = BeautifulSoup(driver.page_source, 'html.parser')
     # select parent div for all primary and secondary news
     parents = soup_level1.findAll('div', class_=['gel-layout__item nw-c-top-stories__primary-item gel-2/3@l gel-9/16@xxl nw-o-no-keyline nw-o-keyline@s nw-o-no-keyline@m', 'gel-layout__item nw-c-top-stories__secondary-item gel-1/1 gel-1/3@m gel-1/4@l nw-o-keyline nw-o-no-keyline@m gs-u-float-left nw-c-top-stories__secondary-item--1 gel-3/16@xxl gs-u-float-none@xxl gs-u-mt gs-u-mt0@xs', 'gel-layout__item nw-c-top-stories__secondary-item gel-1/1 gel-1/3@m gel-1/4@l nw-o-keyline nw-o-no-keyline@m gs-u-float-left nw-c-top-stories__secondary-item--2 gel-1/5@xxl', 'gel-layout__item nw-c-top-stories__secondary-item gel-1/ 1 gel-1/3@m gel-1/4@l nw-o-keyline nw-o-no-keyline@m gs-u-float-left nw-c-top-stories__secondary-item--3 gel-1/5@xxl', 'gel-layout__item nw-c-top-stories__secondary-item gel-1/1 gel-1/3@m gel-1/4@l nw-o-keyline nw-o-no-keyline@m gs-u-float-left nw-c-top-stories__secondary-item--4 gel-1/5@xxl', 'gel-layout__item nw-c-top-stories__secondary-item gel-1/1 gel-1/3@m gel-1/4@l nw-o-keyline nw-o-no-keyline@m gs-u-float-left nw-c-top-stories__secondary-item--5 gel-1/5@xxl'])
@@ -47,12 +50,6 @@ def fetch_news(driver):
         headline = fetch_headline(div_1)
         content = fetch_content(div_1)
         # create News type and add to list
-        news = News()
-        news.__init__(img_url, headline, content)
+        news = NewsItem(img_url, headline, content)
         newsItems.append(news)
-
-def main():
-    driver = initialize_driver()
-    fetch_news(driver)
-
-main()
+    return newsItems
